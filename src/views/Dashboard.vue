@@ -17,8 +17,8 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="taskList.length > 0">
-          <tr v-for="(taskl, index) in taskList" :key="taskl">
+        <template v-if="taskList.data.length > 0">
+          <tr v-for="(taskl, index) in taskList.data" :key="taskl">
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ taskl.title }}</td>
             <td>{{ taskl.description }}</td>
@@ -48,6 +48,8 @@
       </tbody>
     </table>
 
+    <Bootstrap5Pagination :data="taskList" @pagination-change-page="getData" />
+
   </main>
 
   <!-- Modal -->
@@ -60,6 +62,8 @@
 import axios from 'axios';
 import CreateList from "@/components/modals/CreateList.vue"
 import UpdateList from "@/components/modals/UpdateList.vue"
+import { Bootstrap5Pagination } from 'laravel-vue-pagination';
+
 
 export default {
   name: 'dashboard',
@@ -73,7 +77,7 @@ export default {
       task_id: null,
       tasks: [],
 
-      taskList: [],
+      taskList: { data: [] },
       // End multiple select
 
       createtkl: {
@@ -94,7 +98,8 @@ export default {
   components: {
 
     CreateList,
-    UpdateList
+    UpdateList,
+    Bootstrap5Pagination
 
   },
   mounted() {
@@ -102,13 +107,12 @@ export default {
     this.getData();
   },
   methods: {
-    getData() {
+    getData(page = 1) {
       axios
-        .get(`auth/tkl`)
+        .get(`auth/tkl?page=${page}`)
         .then((res) => {
           let tkl = res.data.tasklists;
           this.taskList = tkl;
-
         });
     },
     showList(code) {

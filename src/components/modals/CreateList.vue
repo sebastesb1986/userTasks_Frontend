@@ -99,6 +99,10 @@ export default {
 
         this.theModal.hide();
 
+        this.createtkl.title = "";
+        this.createtkl.description = "";
+        this.createtkl.task_id = [];
+
         this.$toast.success(toast.success);
 
         this.$emit('succesfully');

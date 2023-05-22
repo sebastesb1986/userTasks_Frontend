@@ -65,10 +65,13 @@ export default {
 
                 this.theModal.hide();
 
+                this.task.title = "";
+                this.task.description = "";
+
                 this.$toast.success(toast.success);
 
                 this.$emit('succesfully');
-                
+
             }).catch(e => {
 
                 const arr = e.response;

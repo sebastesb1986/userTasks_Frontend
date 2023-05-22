@@ -4,19 +4,18 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalTC"><i
                     class="bi bi-plus-lg"></i> Crear tarea</button>
         </div>
-        <template v-if="tasks.length > 0">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Titulo</th>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr v-for="(task, index) in tasks" :key="task">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-if="tasks.data.length > 0">
+                    <tr v-for="(task, index) in tasks.data" :key="task">
                         <th scope="row">{{ index + 1 }}</th>
                         <td>{{ task.title }}</td>
                         <td>{{ task.description }}</td>
@@ -31,19 +30,25 @@
                             </div>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </template>
-        <template v-else>
-            <div class="bg-body-tertiary p-2 rounded">
-                <div class="col-sm-8 py-5 mx-auto">
-                    <h1 class="display-5 fw-normal">No hay tareas registradas.</h1>
-                    <p class="fs-5">Para poder registrar una tarea, dirigete al boton superior de la derecha
-                        para crearla.
-                    </p>
-                </div>
-            </div>
-        </template>
+                </template>
+                <tr v-else>
+                    <td colspan="4">
+                        <div class="bg-body-tertiary p-2 rounded">
+                            <div class="col-sm-8 py-5 mx-auto">
+                                <h1 class="display-5 fw-normal">No hay listas de tareas registradas.</h1>
+                                <p class="fs-5">Para poder registrar una tarea, dirigete al boton superior de la
+                                    derecha
+                                    para crearla.
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <Bootstrap5Pagination :data="tasks" @pagination-change-page="getData" />
+
     </main>
     <!-- Modal -->
     <CreateTask @succesfully="getData"></CreateTask>
@@ -55,6 +60,7 @@
 import axios from 'axios';
 import CreateTask from "@/components/modals/CreateTask.vue"
 import UpdateTask from "@/components/modals/UpdateTask.vue"
+import { Bootstrap5Pagination } from 'laravel-vue-pagination';
 
 export default {
     name: 'dashboard',
@@ -62,7 +68,7 @@ export default {
     data() {
         return {
 
-            tasks: [],
+            tasks: { data: [] },
 
             task: {
                 id: "",
@@ -75,16 +81,17 @@ export default {
     components: {
 
         CreateTask,
-        UpdateTask
+        UpdateTask,
+        Bootstrap5Pagination
 
     },
     mounted() {
         this.getData();
     },
     methods: {
-        getData() {
+        getData(page = 1) {
             axios
-                .get(`auth/tk`)
+                .get(`auth/allTask?page=${page}`)
                 .then((res) => {
 
                     let tkl = res.data.tasks;
