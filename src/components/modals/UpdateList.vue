@@ -11,10 +11,12 @@
                     <div class="mb-3">
                         <label class="form-label">titulo</label>
                         <input type="text" class="form-control" v-model="tklUp.title">
+                        <span v-if="validation.errors.title" class="error-message">{{ validation.errors.title[0] }}</span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Descripción</label>
                         <textarea type="text" class="form-control" rows="3" v-model="tklUp.description"></textarea>
+                        <span v-if="validation.errors.description" class="error-message">{{ validation.errors.description[0] }}</span>
                     </div>
                     <div class="mb-3">
                         <label class="form-check-label" for="exampleCheck1">Tareas:</label>
@@ -43,6 +45,10 @@ export default {
 
     data() {
         return {
+
+            validation: {
+                errors: {}
+            },
 
             // Multiple select
             task_id: null,
@@ -114,8 +120,14 @@ export default {
                 this.theModal.hide();
                 this.$emit('succesfully');
 
-            }).catch(error => {
-                console.log(error)
+            }).catch(e => {
+                const arr = e.response;
+
+                if (arr.status == 422) {
+
+                    this.validation.errors = arr.data.errors;
+
+                }
             })
         },
 

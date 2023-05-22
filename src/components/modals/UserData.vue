@@ -11,18 +11,26 @@
                     <div class="mb-3">
                         <label class="form-label">Nombre(s)</label>
                         <input type="text" class="form-control" v-model="userData.name">
+                        <span v-if="validation.errors.name" class="error-message">{{ validation.errors.name[0] }}</span>
+
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Apellido(s)</label>
                         <input type="text" class="form-control" v-model="userData.lastname">
+                        <span v-if="validation.errors.lastname" class="error-message">{{ validation.errors.lastname[0] }}</span>
+
                     </div>
                     <div class="mb-3">
                         <label class="form-label">identificación</label>
                         <input type="text" class="form-control" v-model="userData.identification">
+                        <span v-if="validation.errors.identification" class="error-message">{{ validation.errors.identification[0] }}</span>
+
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Correo electrónico</label>
                         <input type="text" class="form-control" v-model="userData.email">
+                        <span v-if="validation.errors.email" class="error-message">{{ validation.errors.email[0] }}</span>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -45,6 +53,10 @@ export default {
 
     data() {
         return {
+
+            validation: {
+                errors: {}
+            },
 
             userData: {
                 id: "",
@@ -114,8 +126,14 @@ export default {
                 this.$parent.$refs.username.innerText = this.userData.name;
                 // this.$router.go();
 
-            }).catch(error => {
-                console.log(error)
+            }).catch(e => {
+                const arr = e.response;
+
+                if (arr.status == 422) {
+
+                    this.validation.errors = arr.data.errors;
+
+                }
             })
         },
 

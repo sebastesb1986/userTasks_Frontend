@@ -121,7 +121,6 @@ export default {
         })
         .catch((e) => {
 
-          //const err = e.response.data;
           const arr = e.response;
 
           if (arr.status == 401) {
@@ -131,9 +130,6 @@ export default {
             this.validation.errors = arr.data.errors
           }
 
-
-
-          // this.$router.go();
         })
 
 

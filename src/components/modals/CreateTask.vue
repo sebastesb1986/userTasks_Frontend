@@ -11,10 +11,13 @@
                     <div class="mb-3">
                         <label class="form-label">Título</label>
                         <input type="text" class="form-control" v-model="task.title">
+                        <span v-if="validation.errors.title" class="error-message">{{ validation.errors.title[0] }}</span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Descripción</label>
                         <textarea type="text" class="form-control" v-model="task.description" rows="3"></textarea>
+                        <span v-if="validation.errors.description" class="error-message">{{ validation.errors.description[0] }}</span>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -37,6 +40,10 @@ export default {
     data() {
         return {
 
+            validation: {
+                errors: {}
+            },
+
             task: {
                 title: "",
                 description: "",
@@ -58,8 +65,15 @@ export default {
             await axios.post('auth/createtk', this.task).then(() => {
                 this.theModal.hide();
                 this.$emit('succesfully');
-            }).catch(error => {
-                console.log(error)
+            }).catch(e => {
+                const arr = e.response;
+
+                if (arr.status == 422) {
+
+                    this.validation.errors = arr.data.errors;
+
+                }
+                
             })
         },
 
