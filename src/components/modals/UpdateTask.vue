@@ -11,12 +11,10 @@
                     <div class="mb-3">
                         <label class="form-label">titulo</label>
                         <input type="text" class="form-control" v-model="task.title">
-                        <span v-if="validation.errors.title" class="error-message">{{ validation.errors.title[0] }}</span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Descripción</label>
-                        <input type="text" class="form-control" v-model="task.description">
-                        <span v-if="validation.errors.description" class="error-message">{{ validation.errors.description[0] }}</span>
+                        <textarea type="text" class="form-control" rows="3" v-model="task.description"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -82,17 +80,31 @@ export default {
 
         },
         async updateTask(id) {
-            await axios.put(`auth/updatetk/${id}`, this.task).then(() => {
+            await axios.put(`auth/updatetk/${id}`, this.task).then((response) => {
 
-                this.theModal.hide();
+                const toast = response.data;
+
+                this.theModal.hide();         
                 this.$emit('succesfully');
+
+                this.$toast.success(toast.success);
+
+                // Close all opened toast after 3000ms
+                setTimeout(this.$toast.clear, 4000)
 
             }).catch(e => {
                 const arr = e.response;
+                const toast = arr.data.errors;
 
                 if (arr.status == 422) {
+                    
+                    this.validation.errors = toast;
+                
+                    (toast.title != null) ? this.$toast.error(toast.title[0]) : '';
+                    (toast.description != null) ? this.$toast.error(toast.description[0]) : '';
 
-                    this.validation.errors = arr.data.errors;
+                    // Close all opened toast after 3000ms
+                    setTimeout(this.$toast.clear, 4000)
 
                 }
             })

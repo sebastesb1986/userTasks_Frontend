@@ -104,8 +104,6 @@ export default {
                 this.task.title = title
                 this.task.description = description
 
-                console.log(arrTask.task)
-
             }).catch(error => {
                 console.log(error)
             })

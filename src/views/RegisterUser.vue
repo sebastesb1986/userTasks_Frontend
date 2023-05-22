@@ -109,14 +109,34 @@ export default {
 
         async submit() {
 
-            await axios.post('auth/register', this.form).then(() => {
+            await axios.post('auth/register', this.form).then((response) => {
+
+                const toast = response.data
+
+                this.$toast.success(toast.message);
 
                 this.$router.replace({
                     name: 'signin'
                 })
 
-            }).catch(error => {
-                console.log(error)
+            }).catch(e => {
+
+                const arr = e.response;
+                const toast = arr.data.errors;
+
+                if (arr.status == 422) {
+
+                    (toast.name != null) ? this.$toast.error(toast.name[0]) : '';
+                    (toast.lastname != null) ? this.$toast.error(toast.lastname[0]) : '';
+                    (toast.identification != null) ? this.$toast.error(toast.identification[0]) : '';
+                    (toast.email != null) ? this.$toast.error(toast.email[0]) : '';
+                    (toast.password != null) ? this.$toast.error(toast.password[0]) : '';
+
+                    // Close all opened toast after 3000ms
+                    setTimeout(this.$toast.clear, 4000)
+
+                }
+
             })
 
 

@@ -11,13 +11,10 @@
                     <div class="mb-3">
                         <label class="form-label">Título</label>
                         <input type="text" class="form-control" v-model="task.title">
-                        <span v-if="validation.errors.title" class="error-message">{{ validation.errors.title[0] }}</span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Descripción</label>
                         <textarea type="text" class="form-control" v-model="task.description" rows="3"></textarea>
-                        <span v-if="validation.errors.description" class="error-message">{{ validation.errors.description[0] }}</span>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -62,18 +59,34 @@ export default {
     methods: {
 
         async createTask() {
-            await axios.post('auth/createtk', this.task).then(() => {
+            await axios.post('auth/createtk', this.task).then((response) => {
+
+                const toast = response.data
+
                 this.theModal.hide();
+
+                this.$toast.success(toast.success);
+
                 this.$emit('succesfully');
+                
             }).catch(e => {
+
                 const arr = e.response;
+                const toast = arr.data.errors;
 
                 if (arr.status == 422) {
 
-                    this.validation.errors = arr.data.errors;
+                    this.validation.errors = toast;
+
+                    (toast.title != null) ? this.$toast.error(toast.title[0]) : '';
+                    (toast.description != null) ? this.$toast.error(toast.description[0]) : '';
+
+
+                    // Close all opened toast after 3000ms
+                    setTimeout(this.$toast.clear, 4000)
 
                 }
-                
+
             })
         },
 

@@ -49,9 +49,6 @@
       </tbody>
     </table>
 
-
-
-
   </main>
 
   <!-- Modal -->
@@ -113,7 +110,6 @@ export default {
       axios
         .get(`auth/tkl`)
         .then((res) => {
-
           let tkl = res.data.tasklists;
           this.taskList = tkl;
 
@@ -149,8 +145,6 @@ export default {
         this.tklup.list_code = list_code
         this.tklup.title = title
         this.tklup.description = description
-
-        console.log(arrList.tasklist);
 
       }).catch(error => {
         console.log(error)

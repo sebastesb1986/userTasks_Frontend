@@ -11,26 +11,19 @@
                     <div class="mb-3">
                         <label class="form-label">Nombre(s)</label>
                         <input type="text" class="form-control" v-model="userData.name">
-                        <span v-if="validation.errors.name" class="error-message">{{ validation.errors.name[0] }}</span>
-
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Apellido(s)</label>
                         <input type="text" class="form-control" v-model="userData.lastname">
-                        <span v-if="validation.errors.lastname" class="error-message">{{ validation.errors.lastname[0] }}</span>
-
                     </div>
                     <div class="mb-3">
                         <label class="form-label">identificación</label>
                         <input type="text" class="form-control" v-model="userData.identification">
-                        <span v-if="validation.errors.identification" class="error-message">{{ validation.errors.identification[0] }}</span>
 
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Correo electrónico</label>
                         <input type="text" class="form-control" v-model="userData.email">
-                        <span v-if="validation.errors.email" class="error-message">{{ validation.errors.email[0] }}</span>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -84,7 +77,7 @@ export default {
     mounted() {
 
         this.theModal = new Modal('#exampleModalU');
-        
+
     },
     methods: {
 
@@ -117,21 +110,35 @@ export default {
                 });
         },
         async updateUser(id) {
-          
-            await axios.put(`auth/updateus/${id}`, this.userData).then(() => {
+
+            await axios.put(`auth/updateus/${id}`, this.userData).then((response) => {
+
+                const toast = response.data
 
                 this.theModal.hide();
-                // this.$emit('succesfully');
                 
+                this.$toast.success(toast.success);
+
                 this.$parent.$refs.username.innerText = this.userData.name;
-                // this.$router.go();
+                
 
             }).catch(e => {
+
                 const arr = e.response;
+                const toast = arr.data.errors;
 
                 if (arr.status == 422) {
 
-                    this.validation.errors = arr.data.errors;
+                    this.validation.errors = toast;
+
+                    (toast.name != null) ? this.$toast.error(toast.name[0]) : '';
+                    (toast.lastname != null) ? this.$toast.error(toast.lastname[0]) : '';
+                    (toast.identification != null) ? this.$toast.error(toast.identification[0]) : '';
+                    (toast.email != null) ? this.$toast.error(toast.email[0]) : '';
+                    (toast.password != null) ? this.$toast.error(toast.password[0]) : '';
+
+                    // Close all opened toast after 3000ms
+                    setTimeout(this.$toast.clear, 4000)
 
                 }
             })

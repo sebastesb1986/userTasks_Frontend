@@ -1,34 +1,16 @@
 <template>
   <main class="form-signin w-100 m-auto text-center py-5">
-
-    <div class="alert alert-danger alert-dismissible fade" :class="[validation.noUser ? 'show' : '']" role="alert">
-      <strong>Error!</strong> {{ validation.noUser }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <!--<div class="alert alert-danger alert-dismissible fade" :class="[validation.errors ? 'show' : '']" role="alert">
-      <strong>Error!</strong>
-      <ul>
-        <li v-for="error in validation.errors" :key="error">
-          {{ error[0] }}
-        </li>
-
-      </ul>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>-->
-
+   
     <form @submit.prevent="submit">
 
       <h1 class="h3 mb-3 fw-normal">Iniciar Sesión</h1>
 
       <div class="form-floating">
         <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" v-model="form.email">
-        <span v-if="validation.errors.email" class="error-message">{{ validation.errors.email[0] }}</span>
         <label for="floatingInput">Email address</label>
       </div>
       <div class="form-floating">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="form.password">
-        <span v-if="validation.errors.password" class="error-message">{{ validation.errors.password[0] }}</span>
         <label for="floatingPassword">Password</label>
       </div>
 
@@ -122,12 +104,24 @@ export default {
         .catch((e) => {
 
           const arr = e.response;
+          const toast = arr.data.errors;
 
           if (arr.status == 401) {
-            this.validation.noUser = arr.data.error;
+
+            this.validation.noUser = toast;
+            this.$toast.error(arr.data.error);
+        
+
           }
           else if (arr.status == 422) {
-            this.validation.errors = arr.data.errors
+            this.validation.errors = toast
+
+            this.$toast.error(toast.email);
+            this.$toast.error(toast.password);
+
+            // Close all opened toast after 3000ms
+            setTimeout(this.$toast.clear, 4000)
+
           }
 
         })
