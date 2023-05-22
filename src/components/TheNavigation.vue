@@ -198,6 +198,8 @@ export default {
     signOut() {
       this.signOutAction().then(() => {
 
+        this.$toast.success("Has finalizado tu sesión");
+
         this.$router.replace({
           name: 'signin'
         })

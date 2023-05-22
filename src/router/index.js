@@ -4,6 +4,8 @@ import RegisterUser from '../views/RegisterUser.vue'
 import Signin from '../views/Signin.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Tasks from '../views/TaskView.vue'
+import PageNotFound from '../views/PageNotFound.vue'
+
 import store from '@/store'
 
 const routes = [
@@ -84,7 +86,8 @@ const routes = [
       next();
 
     }
-  }
+  },
+  { path: '/:pathMatch(.*)*' ,component: PageNotFound }
 ]
 
 const router = createRouter({

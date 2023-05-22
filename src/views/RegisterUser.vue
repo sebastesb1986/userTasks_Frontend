@@ -38,7 +38,9 @@
                 <label for="floatingPassword">Confirmar contraseña</label>
             </div>
 
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Registrar</button>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Registrar</button><br><br>
+            <p>¿Ya tienes una cuenta? <router-link :to="{ name: 'signin' }">Iniciar sesión</router-link></p>
+
             <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2023</p>
         </form>
     </main>
