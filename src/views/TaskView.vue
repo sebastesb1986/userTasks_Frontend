@@ -41,7 +41,8 @@
                     <p class="fs-5">Para poder registrar una tarea, dirigete al boton superior de la derecha
                         para crearla.
                     </p>
-                    <p class="fs-5"><b>No puedes crear una lista de tareas sino existen tareas disponibles o creadas.</b></p>
+                    <p class="fs-5"><b>No puedes crear una lista de tareas sino existen tareas disponibles o creadas.</b>
+                    </p>
                 </div>
             </div>
         </template>
@@ -109,13 +110,33 @@ export default {
             })
         },
         deleteList(id) {
-            if (confirm("¿Estas seguro de eliminar esta tarea ?")) {
-                axios.delete(`auth/deletetk/${id}`).then(() => {
-                    this.getData()
-                }).catch(error => {
-                    console.log(error)
-                })
-            }
+
+            this.$swal.fire({
+                title: '¿Seguro?',
+                text: "¿Quieres eliminar esta tarea?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    axios.delete(`auth/deletetk/${id}`).then(() => {
+                        this.getData()
+                        this.$swal.fire(
+                            'Eliminada!',
+                            'Tarea eliminada exitosamente!.',
+                            'success'
+                        )
+                    }).catch(error => {
+                        console.log(error)
+                    })
+
+
+                }
+            })
         }
     },
 }

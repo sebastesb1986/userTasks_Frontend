@@ -106,7 +106,7 @@ export default {
     this.getInit();
   },
   methods: {
-  getData() {
+    getData() {
       axios
         .get(`auth/tkl`)
         .then((res) => {
@@ -151,13 +151,33 @@ export default {
       })
     },
     deleteList(id) {
-      if (confirm("¿Estas seguro de eliminar esta lista ?")) {
-        axios.delete(`auth/deletetkl/${id}`).then(() => {
-          this.getData()
-        }).catch(error => {
-          console.log(error)
-        })
-      }
+
+      this.$swal.fire({
+        title: '¿Seguro?',
+        text: "¿Quieres eliminar esta lista?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          axios.delete(`auth/deletetkl/${id}`).then(() => {
+            this.getData()
+            this.$swal.fire(
+              'Eliminada!',
+              'La lista ha sido eliminada exitosamente!.',
+              'success'
+            )
+          }).catch(error => {
+            console.log(error)
+          })
+
+
+        }
+      })
     }
   },
 }
