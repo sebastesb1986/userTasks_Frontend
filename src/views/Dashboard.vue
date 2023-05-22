@@ -41,7 +41,6 @@
                 <p class="fs-5">Para poder registrar una lista de tareas, dirigete al boton superior de la derecha
                   para crearla.
                 </p>
-                <p class="fs-5"><b>No puedes crear una lista de tareas sino existen tareas disponibles o creadas.</b></p>
               </div>
             </div>
           </td>
@@ -101,9 +100,6 @@ export default {
   mounted() {
     // Mostrar las listas de tareas del usuario.
     this.getData();
-
-    // Confirmamos si tenemos tareas registradas.
-    this.getInit();
   },
   methods: {
     getData() {
@@ -112,25 +108,6 @@ export default {
         .then((res) => {
           let tkl = res.data.tasklists;
           this.taskList = tkl;
-
-        });
-    },
-    getInit() {
-
-      axios
-        .get(`auth/tk`)
-        .then((res) => {
-
-          let tks = res.data.tasks;
-
-
-          if (tks.length == 0) {
-
-            this.$router.replace({
-              name: 'tasks'
-            })
-
-          }
 
         });
     },

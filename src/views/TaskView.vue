@@ -41,8 +41,6 @@
                     <p class="fs-5">Para poder registrar una tarea, dirigete al boton superior de la derecha
                         para crearla.
                     </p>
-                    <p class="fs-5"><b>No puedes crear una lista de tareas sino existen tareas disponibles o creadas.</b>
-                    </p>
                 </div>
             </div>
         </template>
